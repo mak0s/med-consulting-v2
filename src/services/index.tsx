@@ -1,9 +1,12 @@
 import { useContext, createContext, FC } from 'react';
-import { IChatService } from './chat';
+
 import { PropsWithChildren } from 'types';
+import { IChatService } from './chat';
+import { IAuthService } from './auth';
 
 interface IServices {
   chatService: IChatService;
+  authService: IAuthService;
 }
 
 const ServicesContext = createContext<IServices>(null as any);

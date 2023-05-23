@@ -2,31 +2,42 @@ import { useState, useCallback } from 'react';
 
 import { IConsultantInteractor } from './interactor';
 import type { FormFields } from './types';
+import { IAuthInteractor } from 'modules/authorization/interactor';
 
 interface IProps {
   interactor: IConsultantInteractor;
+  authInteractor: IAuthInteractor;
   ConsultantView: any;
 }
 
-const ConsultantRouter = ({ interactor, ConsultantView }: IProps) => {
+const ConsultantRouter = ({
+  interactor,
+  authInteractor,
+  ConsultantView,
+}: IProps) => {
   const [answer, setAnswer] = useState<string | null>(null);
   const onSubmit = useCallback(
     async ({ question }: FormFields) => {
       const answer = await interactor.getAnswer(question);
-      console.log(answer);
+
       setAnswer(answer);
     },
     [interactor]
   );
 
-  if (interactor.loadingResponse) {
-    return <div>Генерую відповідь...</div>;
-  }
+  const onSignOut = useCallback(async () => {
+    await authInteractor.signOut();
+  }, [authInteractor]);
 
   return (
     <>
       {interactor.children.consultantView && (
-        <ConsultantView onSubmit={onSubmit} answer={answer} />
+        <ConsultantView
+          onSubmit={onSubmit}
+          onSignOut={onSignOut}
+          answer={answer}
+          loading={interactor.loadingResponse}
+        />
       )}
     </>
   );
