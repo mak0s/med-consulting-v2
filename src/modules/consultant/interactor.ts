@@ -1,9 +1,11 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 
 import { IChatService } from 'services/chat';
+import { IConsultantStore } from 'stores/consultant';
 
 interface IPayload {
   chatService: IChatService;
+  consultantStore: IConsultantStore;
 }
 
 export interface IConsultantInteractor {
@@ -16,6 +18,7 @@ export interface IConsultantInteractor {
 
 const useConsultantInteractor = ({
   chatService,
+  consultantStore,
 }: IPayload): IConsultantInteractor => {
   const [loadingResponse, setLoadingResponse] = useState(false);
 
@@ -35,6 +38,16 @@ const useConsultantInteractor = ({
     },
     [chatService]
   );
+
+  useEffect(() => {
+    const init = async () => {
+      const prompts = await chatService.getPrompts();
+
+      consultantStore.setPrompts(prompts);
+    };
+
+    init();
+  }, [chatService]);
 
   return {
     getAnswer,

@@ -1,11 +1,13 @@
 import * as React from 'react';
+import { useRouter } from 'next/router';
 
 import { PropsWithChildren } from 'types';
 import { IAuthStore } from './auth';
-import { useRouter } from 'next/router';
+import { IConsultantStore } from './consultant';
 
 interface IStores {
   authStore: IAuthStore;
+  consultantStore: IConsultantStore;
 }
 
 const StoresContext = React.createContext<IStores>(null as any);

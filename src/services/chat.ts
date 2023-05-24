@@ -1,8 +1,12 @@
 import { ChatResponceError } from 'exceptions/chat-error';
+import { collection, getDocs } from 'firebase/firestore';
+import { IPrompt } from 'interfaces/prompts';
+import { db } from 'server';
 import { chatApiPath } from 'utils/constants';
 
 export interface IChatService {
   getAnswer: (question: string) => Promise<Response>;
+  getPrompts: () => Promise<IPrompt[]>;
 }
 
 export class ChatService implements IChatService {
@@ -20,5 +24,18 @@ export class ChatService implements IChatService {
     }
 
     return response;
+  };
+  getPrompts: IChatService['getPrompts'] = async () => {
+    const snapshot = await getDocs(collection(db, 'prompts'));
+
+    const prompts = await Promise.all(
+      snapshot.docs.map(async (p) => {
+        const prompt = p.data();
+
+        return prompt;
+      })
+    );
+
+    return prompts as IPrompt[];
   };
 }

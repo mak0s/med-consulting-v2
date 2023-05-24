@@ -9,20 +9,20 @@ interface IConsultantProps {}
 
 const Consultant = ({}: IConsultantProps) => {
   const { chatService, authService } = useServices();
-  const { authStore } = useStores();
-  const interactor = useConsultantInteractor({ chatService });
+  const { authStore, consultantStore } = useStores();
+  const interactor = useConsultantInteractor({ chatService, consultantStore });
   const authInteractor = useAuthorizationInteractor({
     authStore,
     authService,
     signInForm: false,
     signUpForm: false,
   });
-  console.log('authInteractor', authInteractor);
 
   return (
     <ConsultantRouter
       interactor={interactor}
       authInteractor={authInteractor}
+      consultantStore={consultantStore}
       ConsultantView={ConsultantView}
     />
   );
